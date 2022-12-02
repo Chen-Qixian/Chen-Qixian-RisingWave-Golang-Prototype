@@ -13,6 +13,8 @@ type Page struct {
 	Body []byte
 }
 
+var templates = template.Must(template.ParseFiles("edit.html", "view.html"))
+
 func (p *Page) save() error {
 	filename := p.Title + ".txt"
 
@@ -35,18 +37,19 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
-	t, err := template.ParseFiles(tmpl + ".html")
+	// t, err := template.ParseFiles(tmpl + ".html")
+	err := templates.ExecuteTemplate(w, tmpl + ".html", p)
 	
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	
-	err = t.Execute(w, p)
+	// err = t.Execute(w, p)
 	
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// }
 }
 
 func viewHandler(w http.ResponseWriter, r *http.Request) {
